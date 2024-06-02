@@ -14,20 +14,6 @@ isExisting = os.path.exists(filename)
 conn = sqlite3.connect('data.db')
 cursor = conn.cursor()
 
-def read_tokens_from_file(file_path):
-    with open(file_path, 'r') as file:
-        tokens = file.read().splitlines()
-    return tokens
-
-tokens = read_tokens_from_file('helper.txt')
-head1 = {'Authorization': 'Token ' + tokens[0]}
-head2 = {'Authorization': 'Token ' + tokens[1]}
-
-join_url = "https://www.clubhouseapi.com/api/join_channel"
-helper_msg = "https://www.clubhouseapi.com/api/send_channel_message"
-
-
-
 if isExisting:
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -191,25 +177,6 @@ def send_channel_message(token, name):
         print('Channel Message Status:', response.text)
     else:
         if response.status_code == 429:
-            print('Joining the helper bot-1....')
-            join_bot1 = requests.post(f'{join_url}', data=data, headers=head1)
-            print('Helper bot-1  Status:', join_bot1)
-            response2 = requests.post(f'{helper_msg}', data=data, headers=head1)
-            if response2.status_code == 200:
-                print(' Helper Bot-1 Message status:', response.text)
-            else:
-                if response2.status_code == 429:
-                    print('Joining the helper bot-2....')
-                    join_bot2 = requests.post(f'{join_url}', data=data, headers=head2)
-                    print('Helper bot-2 Status:', join_bot2)
-                    response3 = requests.post(f'{helper_msg}', data=data, headers=head2)
-                    if response3.status_code == 200:
-                        print('Helper Bot-2 Message Status:', response.text)
-                    else:
-                        time.sleep(1)
-                else:
-                    time.sleep(1)
-        else:
             print('Invite Failed due to too Many Users, Pausing Application For 5 Seconds')
             time.sleep(5)
 
